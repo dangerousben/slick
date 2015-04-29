@@ -99,22 +99,22 @@ object QueryCompiler {
     Phase.expandRecords,
     Phase.flattenProjections,
     // Optimize for SQL
+    Phase.createAggregates,
     Phase.rewriteJoins,
     Phase.verifySymbols,
-    Phase.relabelUnions,
-    Phase.pruneFields,
     // Combine with client-side mapping and retype
-    Phase.createResultSetMapping,
     Phase.assignTypes
   )
 
   /** Extra phases for translation to SQL comprehensions */
   val relationalPhases = Vector(
     Phase.resolveZipJoins,
-    Phase.convertToComprehensions,
-    Phase.fuseComprehensions,
+    Phase.pruneProjections,
+    Phase.mergeToComprehensions,
     Phase.fixRowNumberOrdering,
-    Phase.hoistClientOps
+    Phase.createResultSetMapping,
+    Phase.hoistClientOps,
+    Phase.removeFieldNames
   )
 
   /** The default compiler */
@@ -150,16 +150,16 @@ object Phase {
   val expandConditionals = new ExpandConditionals
   val expandRecords = new ExpandRecords
   val flattenProjections = new FlattenProjections
+  val createAggregates = new CreateAggregates
   val rewriteJoins = new RewriteJoins
   val verifySymbols = new VerifySymbols
-  val relabelUnions = new RelabelUnions
-  val pruneFields = new PruneFields
   val resolveZipJoins = new ResolveZipJoins
   val assignTypes = new AssignTypes
-  val convertToComprehensions = new ConvertToComprehensions
-  val fuseComprehensions = new FuseComprehensions
+  val mergeToComprehensions = new MergeToComprehensions
   val fixRowNumberOrdering = new FixRowNumberOrdering
   val hoistClientOps = new HoistClientOps
+  val pruneProjections = new PruneProjections
+  val removeFieldNames = new RemoveFieldNames
 
   /* Extra phases that are not enabled by default */
   val rewriteBooleans = new RewriteBooleans
